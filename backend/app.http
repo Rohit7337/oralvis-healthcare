@@ -1,0 +1,39 @@
+@host = http://localhost:5050
+
+### Login as Technician
+# @name techLogin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "tech@oralvis.com",
+  "password": "tech123"
+}
+
+### Login as Dentist
+# @name dentistLogin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dentist@oralvis.com",
+  "password": "dent123"
+}
+
+### Upload Scan (Technician only)
+# Use the token captured from techLogin response automatically
+POST {{host}}/api/scans
+Authorization: Bearer {{techLogin.response.body.token}}
+Content-Type: multipart/form-data
+
+# form fields
+patientName: John Doe
+patientId: P001
+scanType: RGB
+region: Frontal
+image: < ./test.jpg
+# Put a small test image named test.jpg in the same folder as this app.http file.
+
+### Get Scans (Dentist only)
+GET {{host}}/api/scans
+Authorization: Bearer {{dentistLogin.response.body.token}}
